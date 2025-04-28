@@ -1,4 +1,4 @@
-# 🧠 CMSC 315 Project #2: Word Frequency & Sentiment Analysis Program
+# CMSC 315 Project #2: Word Frequency & Sentiment Analysis Program
 
 In this project, you’ll implement a set of basic **Natural Language Processing**
 (NLP) utility methods to analyze a paragraph of text entered by the user.
@@ -10,8 +10,9 @@ In this project, you’ll implement a set of basic **Natural Language Processing
 The `Main` class is already provided and takes care of user input. It calls the
 methods you’ll implement in the `NLPUtility` class. You **should not change**
 any of the predefined constants. Instead, your task is to **complete all the
-static methods in `NLPUtility`** by replacing the current placeholder return statements
-(such as `return null`) with working code based on the method descriptions.
+static methods in `NLPUtility`** by replacing the current placeholder return
+statements (such as `return null`) with working code based on the method
+descriptions.
 
 Predefined constants available to you:
 
@@ -25,13 +26,14 @@ Predefined constants available to you:
 
 ---
 
-### 1. `public static String[] getWordTokens(String text)`
+### Task 1. `public static String[] getWordTokens(String text)`
 
-**Splits the text it into individual words, treating consecutive whitespace or punctuation characters as a
-single delimiter.**
+**Splits the text it into individual words, treating consecutive whitespace or
+punctuation characters as a single delimiter.**
 
-NOTE: The regular expression given in the Pearson textbook in section 21.6 is incorrect.
-The plus sign should follow the character class to match 1 or more white space or punctuation characters.
+NOTE: The regular expression given in the Pearson textbook in section 21.6 is
+incorrect. The plus sign should follow the character class to match 1 or more
+white space or punctuation characters.
 
 `text.split("[\\s\\p{P}]+")`
 
@@ -44,10 +46,10 @@ NLPUtility.getWordTokens("WOW!?!    That .?#       is  REALLY(reaLLy)  amazing! 
 
 ---
 
-### 2. `public static TreeMap<String, Integer> getNonStopWordFrequencies(String[] words)`
+### Task 2. `public static TreeMap<String, Integer> getNonStopWordFrequencies(String[] words)`
 
-**Counts the frequency of non-stop words in the given array of words, ignoring case.
-Returns a `TreeMap` sorted alphabetically by key (i.e. word).**
+**Counts the frequency of non-stop words in the given array of words, ignoring
+case. Returns a `TreeMap` sorted alphabetically by key (i.e. word).**
 
 #### Example:
 
@@ -59,12 +61,13 @@ NLPUtility.getNonStopWordFrequencies(words);
 
 ---
 
-### 3. `public static LinkedHashMap<String, Integer> getMapSortedByValueDesc(Map<String, Integer> wordMap)`
+### Task 3. `public static LinkedHashMap<String, Integer> getMapSortedByValueDesc(Map<String, Integer> wordMap)`
 
 **Returns a `LinkedHashMap` sorted by frequency in descending order. For ties,
 maintains the original order of keys as they appear in the map.**
 
 Algorithm:
+
 1. Convert the word map entries to a list for sorting
 2. Sort the list of entries in descending order based on frequency (value)
 3. Create a LinkedHashMap and insert the sorted entries to maintain their order.
@@ -85,7 +88,7 @@ NLPUtility.getMapSortedByValueDesc(wordMap);
 
 ---
 
-### 4. `public static String getSentimentFromFrequencies(Map<String, Integer> wordMap)`
+### Task 4. `public static String getSentimentFromFrequencies(Map<String, Integer> wordMap)`
 
 **Adds up frequencies of words in `POSITIVE_WORDS` and `NEGATIVE_WORDS`. Returns
 a summary string in the format "Positive: X, Negative: Y".**
@@ -106,9 +109,10 @@ NLPUtility.getSentimentFromFrequencies(wordMap2);
 
 ---
 
-### 5. `public static List<String> getMostFrequentWords(Map<String, Integer> wordMap)`
+### Task 5. `public static List<String> getMostFrequentWords(Map<String, Integer> wordMap)`
 
-**Returns an alphabetically sorted list of word(s) having the highest frequency in the map.**
+**Returns an alphabetically sorted list of word(s) having the highest frequency
+in the map.**
 
 #### Example:
 

@@ -3,50 +3,33 @@ import java.util.*;
 public class NLPUtilitySolution {
 
     /**
-     * A set of stop words to ignore during word frequency analysis.
-     */
-    public static final Set<String> STOP_WORDS = new HashSet<>(
-            Arrays.asList("the", "is", "in", "at", "of", "and", "a", "to", "it", "or", "was", "so"));
-
-    // JDK 11+
-    // public static final Set<String> STOP_WORDS = Set.of( "the", "is", "in", "at",
-    // "of", "and", "a", "to", "it", "or", "was", "so");
-
-    /**
-     * A set of words deemed positive.
-     */
-    public static final Set<String> POSITIVE_WORDS = new HashSet<>(
-            Arrays.asList("good", "great", "happy", "love", "like"));
-
-    /**
-     * A set of words deemed negative.
-     */
-    public static final Set<String> NEGATIVE_WORDS = new HashSet<>(
-            Arrays.asList("bad", "terrible", "horrible", "sad", "hate"));
-
-    /**
      * Splits the given text into word tokens using one or more whitespace
      * or punctuation characters as delimiters.
      *
      * @param text the input string to be tokenized
      * @return an array of word tokens, excluding punctuation and whitespace
      */
-    public static String[] getWordTokens(String text) {
+    public static String[] splitTextIntoTokens(String text) {
         return text.split("[\\s\\p{Punct}]+");
     }
 
     /**
-     * Counts the frequency of non-stop words in the given array of words, ignoring case.
-     * Uses a {@code TreeMap} to store and sort the words alphabetically.
+     * Counts the frequency of words in the given array, excluding those present in
+     * the specified set of stop words.
+     * The comparison is case-insensitive, and results are stored in a
+     * {@link TreeMap} sorted alphabetically by word.
      *
-     * @param words An array of tokenized words.
-     * @return A {@code TreeMap} containing each non-stop word and its frequency.
+     * @param words     An array of tokenized words to analyze.
+     * @param stopWords A set of words to exclude from the frequency count (e.g.,
+     *                  common stop words like "the", "and").
+     * @return A {@link TreeMap} mapping each non-stop word to its frequency, sorted
+     *         alphabetically.
      */
-    public static TreeMap<String, Integer> getNonStopWordFrequencies(String[] words) {
+    public static TreeMap<String, Integer> countFilteredWords(String[] words, Set<String> stopWords) {
         TreeMap<String, Integer> wordFrequency = new TreeMap<>();
         for (String rawWord : words) {
             String word = rawWord.toLowerCase();
-            if (!STOP_WORDS.contains(word)) {
+            if (!stopWords.contains(word)) {
                 if (wordFrequency.containsKey(word)) {
                     wordFrequency.put(word, wordFrequency.get(word) + 1);
                 } else {
@@ -58,23 +41,22 @@ public class NLPUtilitySolution {
     }
 
     /**
-     * Sorts a map of word frequencies by their values in descending order.
-     * The entries are returned in a LinkedHashMap to preserve the
-     * order of the entries after sorting.
+     * Sorts the entries of a map by their values in descending order.
+     * The result is returned as a {@link LinkedHashMap} to preserve the order of
+     * sorted entries.
      *
-     * @param wordMap A map containing words as keys and their corresponding
-     *                frequencies as values.
-     * @return A LinkedHashMap with the same entries as the original map,
-     *         but sorted by the frequency (value) of the words in descending order.
+     * @param map A map containing keys and integer values to be sorted by value.
+     * @return A {@link LinkedHashMap} containing the same entries as the input map,
+     *         sorted in descending order by value.
      */
-    public static LinkedHashMap<String, Integer> getMapSortedByValueDesc(Map<String, Integer> wordMap) {
+    public static LinkedHashMap<String, Integer> sortByValueDescending(Map<String, Integer> map) {
         // Convert map entries to a list for sorting
-        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(wordMap.entrySet());
+        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(map.entrySet());
 
-        // Sort the list in descending order based on frequency (value)
+        // Sort the list in descending order of value
         entryList.sort((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()));
 
-        // Use LinkedHashMap to maintain the order of sorted entries
+        // Create LinkedHashMap to maintain the order of sorted entries
         LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
         for (Map.Entry<String, Integer> entry : entryList) {
             sortedMap.put(entry.getKey(), entry.getValue());
@@ -93,7 +75,8 @@ public class NLPUtilitySolution {
      * @return A summary string in the format: "Positive: X, Negative: Y"
      *         where X and Y are the total counts of positive and negative words.
      */
-    public static String getSentimentFromFrequencies(Map<String, Integer> wordMap) {
+    public static String getSentiment(Map<String, Integer> wordMap, Set<String> positiveWords,
+            Set<String> negativeWords) {
         // Initialize counters for positive and negative words
         int positive = 0;
         int negative = 0;
@@ -104,11 +87,11 @@ public class NLPUtilitySolution {
             int count = entry.getValue(); // Frequency of the word
 
             // Check if the word is in the list of positive words
-            if (POSITIVE_WORDS.contains(word)) {
+            if (positiveWords.contains(word)) {
                 positive += count; // Increment the positive counter by the word's frequency
             }
             // Check if the word is in the list of negative words
-            else if (NEGATIVE_WORDS.contains(word)) {
+            else if (negativeWords.contains(word)) {
                 negative += count; // Increment the negative counter by the word's frequency
             }
         }
@@ -118,35 +101,41 @@ public class NLPUtilitySolution {
     }
 
     /**
-     * Returns a list of the word(s) with the highest frequency from the given map.
-     * If multiple words share the highest frequency, all are included in the
-     * result.
-     * The returned list is sorted alphabetically.
+     * Finds the words with the highest frequency in the given map and returns a map
+     * containing a sorted word list along with the maximum frequency value.
      *
-     * @param wordMap a map containing words and their corresponding frequencies
-     * @return an alphabetically sorted list of the most frequent word(s)
+     * @param wordMap A map of words and their corresponding frequencies.
+     * @return A map containing:
+     *         - "words": A list of words with the highest frequency, sorted
+     *         alphabetically.
+     *         - "frequency": The highest frequency value.
      */
-    public static List<String> getMostFrequentWords(Map<String, Integer> wordMap) {
+    public static Map<String, Object> getWordsWithMaxFrequency(Map<String, Integer> wordMap) {
         // Find the maximum frequency value in the word map
         int maxFreq = Collections.max(wordMap.values());
 
         // Create a list to store the words with the highest frequency
-        List<String> result = new ArrayList<>();
+        List<String> wordList = new ArrayList<>();
 
         // Iterate through the entries of the word map
         for (Map.Entry<String, Integer> entry : wordMap.entrySet()) {
             // If the frequency of the current word matches the maximum frequency, add it to
             // the result list
             if (entry.getValue() == maxFreq) {
-                result.add(entry.getKey());
+                wordList.add(entry.getKey());
             }
         }
 
         // Sort the result list alphabetically
-        Collections.sort(result);
+        Collections.sort(wordList);
 
-        // Return the sorted list of most frequent word(s)
-        return result;
+        // Create a map to store both the words and the maximum frequency value
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("words", wordList);
+        resultMap.put("frequency", maxFreq);
+
+        // Return the map containing both the word list and the frequency
+        return resultMap;
     }
 
 }
