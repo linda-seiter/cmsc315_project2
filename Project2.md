@@ -7,7 +7,11 @@ In this project, you’ll implement a set of basic **Natural Language Processing
 
 ### Starter Code Info
 
-The `Main` class is already provided and takes care of user input. It calls the
+Download project2_starter.zip and extract the files. The zip contains two
+classes, `Main.java` and `NLPUtility.java`. You should be able to create a new
+Java project and copy the two classes into your project.
+
+The `Main` class is fully implemented and takes care of user input. It calls the
 methods you’ll implement in the `NLPUtility` class.
 
 Predefined sets available in the `main` method:
