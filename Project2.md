@@ -33,14 +33,14 @@ the method descriptions.
 
 ### Task 1. `public static String[] splitTextIntoTokens(String text)`
 
-**Splits the text it into individual words, treating consecutive whitespace or
+**Splits the text into individual words, treating consecutive whitespace or
 punctuation characters as a single delimiter.**
 
 NOTE: The regular expression given in the Pearson textbook in section 21.6 is
 incorrect. The plus sign should follow the character class to match 1 or more
 white space or punctuation characters.
 
-`text.split("[\\s\\p{P}]+")`
+`[\\s\\p{P}]+`
 
 #### Example:
 
@@ -98,7 +98,7 @@ System.out.println(NLPUtility.sortByValueDescending(wordMap)); // {book=3, love=
 
 ---
 
-### Task 4. `public static String getSentimentFromFrequencies(Map<String, Integer> wordMap, Set<String> positiveWords, Set<String> negativeWords)`
+### Task 4. `public static String getSentiment(Map<String, Integer> wordMap, Set<String> positiveWords, Set<String> negativeWords)`
 
 **Sums the total frequencies of words in the corresponding positive and negative
 word sets. Returns a summary string in the format "Positive: X, Negative: Y".**
